@@ -1,0 +1,36 @@
+---> Install react + vite
+   -> npm create vite@latest folder_name
+
+---> Install tailwind 
+   -> npm install -D tailwindcss postcss autoprefixer
+   -> npx tailwindcss init -p
+
+   go to tailwind.config.js file and configure content filed to allow on which type of file tailwind is allowed in this application
+   go to index.css and config tailwind there as well 3 lines 
+   go to tailwind.config.js set extended 
+
+start the application again
+
+---> Install react-touter dom
+   create routes
+
+---> create navbar Page
+
+---> create Login Page
+   -> handle invalid email and password length 
+   -> handle error show on interface and remove it after 7 second using useEffect ,setTimeOut and clearInterval function 
+   -> add feature of show password and hide password using react icon
+
+---> create Signup Page 
+   -> all features we used in login page same here 
+
+---> Navbar Page for Home Page 
+   -> adding Search functionality (LEFT)
+   -> adding Logout and User Profile Icon functionality 
+
+--->Creating Note Card
+--->Create addEditNotes
+    -> use react-model library to make addEditNote form type
+    -> tags Element how to show old tags + new tags just above the input Element
+    -> close button of form 
+    -> edit/add button of form using prop drilling which one we have to choose to perform action either add/edit
