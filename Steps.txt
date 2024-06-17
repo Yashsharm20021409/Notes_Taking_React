@@ -34,3 +34,10 @@ start the application again
     -> tags Element how to show old tags + new tags just above the input Element
     -> close button of form 
     -> edit/add button of form using prop drilling which one we have to choose to perform action either add/edit
+
+
+####################################backend##################################
+
+---> backend setup 
+     -> install all library
+     -> setup in app.js
