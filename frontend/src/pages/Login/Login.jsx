@@ -4,12 +4,16 @@ import Navbar from "../../components/Navbar/Navbar";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { validateEmail } from "../../utilis/helper";
 // import { farregeye, faregeyeslash } from "react-icons/fa6";
+import axios from "axios";
+import { BASE_URL } from "../../utilities/constant";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const toggleShowPassword = () => {
     setIsShowPassword(!isShowPassword);
@@ -31,6 +35,30 @@ const Login = () => {
     setError("");
 
     // Login Api call
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/login`,
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.data && response.data.token) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      if(error.response && error.response.data && error.response.data.message){
+        setError(error.response.data.message)
+      }
+      else{
+        setError("An unexpected error occured. please try again.")
+      }
+    }
   };
 
   // remove visible error after 7 seconds
@@ -102,7 +130,6 @@ const Login = () => {
                 Create an Account
               </Link>
             </p>
-            
           </form>
         </div>
       </div>

@@ -39,6 +39,27 @@ start the application again
 ####################################backend##################################
 
 ---> backend setup 
-     -> install all library
-     -> setup in app.js
+      -> install all library
+      -> setup in app.js
+        -> configure express , mongoose
+        -> connect server , mongodb 
+      -> create user model
+      -> create routes for user 
+         -> install bycryptjs for encryption and descryption and configure it in userRoute
+            use it in userRoute then use function const hashPass = await byc.hash(pass,10);
+         -> install npm i cookie-parser to access user cookie and configure it in app.js and userRoute
+         -> install jsonwebtoken 
+            -> configure it in userRoute and check futher process there
      
+   -> status codes :- https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+      // depend upon organization which one they will use among each range
+      Informational responses (100 – 199)
+      Successful responses (200 – 299) 
+      Redirection messages (300 – 399)
+      Client error responses (400 – 499) // agar client ke data me kuch gadbad hai
+      Server error responses (500 – 599) // agar server side kuch gadbad hui hai
+
+       // always use return while sending error otherwise server try to send below response as well which crash it 
+       return res.status.json .... 
+
+ -> cookie cookie-manager me store hai thunder client k jab login krte hai tab ho rhi hai store

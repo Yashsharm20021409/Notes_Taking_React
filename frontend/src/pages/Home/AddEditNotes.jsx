@@ -1,39 +1,98 @@
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import TagInput from "../../Input/TagInput";
+import axios from "axios";
+import { BASE_URL } from "../../utilities/constant";
 
-const AddEditNotes = ({ noteData, type, onClose }) => {
-  const [tags, setTags] = useState([]);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+const AddEditNotes = ({ noteData, type, onClose, getAllNotes , showToastMessage}) => {
+  const [tags, setTags] = useState(noteData?.tags || []);
+  const [title, setTitle] = useState(noteData?.title || "");
+  const [content, setContent] = useState(noteData?.content || "");
+
+  // console.log(noteData);
 
   const [error, setError] = useState(null);
 
   // add note
-  const addNote = async()=>{}
+  const addNote = async () => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/add-note`,
+        {
+          title,
+          content,
+          tags,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.data && response.data.note) {
+        showToastMessage("Note Added Successfully","add")
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      }
+    }
+  };
 
   // edit note
-  const editNote = async()=>{}
+  const editNote = async () => {
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/edit-note/${noteData?._id}`,
+        {
+          title,
+          content,
+          tags,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
-  const handleAddNote = ()=>{
-    if(!title){
+      if (response.data && response.data.note) {
+        showToastMessage("Note Updated Successfully","edit")
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      }
+    }
+  };
+
+  const handleAddNote = () => {
+    if (!title) {
       setError("Please Enter the title");
       return;
     }
 
-    if(!content){
+    if (!content) {
       setError("Please Enter the content");
       return;
     }
     setError("");
 
-    if(type === "edit"){
-      editNote()
+    if (type === "edit") {
+      editNote();
+    } else {
+      addNote();
     }
-    else{
-      addNote()
-    }
-  }
+  };
 
   return (
     <div>
@@ -49,6 +108,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
           type="text"
           className="text-2xl text-slate-950 outline-none bg-slate-100 "
           placeholder="ADD TITLE..."
+          value={title}
           onChange={(e) => {
             setTitle(e.target.value);
           }}
@@ -61,6 +121,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
           className="text-sm text-slate-950 outline-none bg-slate-100 p-2 rounded"
           placeholder="Content"
           rows={10}
+          value={content}
           onChange={(e) => {
             setContent(e.target.value);
           }}
@@ -77,7 +138,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
         className="btn-primary font-medium mt-5 p-3"
         onClick={handleAddNote}
       >
-        ADD
+        {type === "edit" ? "UPDATE" : "ADD"}
       </button>
     </div>
   );

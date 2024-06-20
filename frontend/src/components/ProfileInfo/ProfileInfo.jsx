@@ -1,20 +1,22 @@
 import React from "react";
 import { getInitials } from "../../utilis/helper";
+import Login from "../../pages/Login/Login";
 
-const ProfileInfo = ({ onLogout }) => {
-  return (
+const ProfileInfo = ({ onLogout, userInfo }) => {
+  const onLogin = () =>{}
+  return userInfo && (
     <div className="flex items-center gap-3">
       <div className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-100">
-        {getInitials("John Williams")}
+        {getInitials(userInfo?.fullname)}
       </div>
       <div>
-        <p className="text-sm font-medium">John Willam</p>
+        <p className="text-sm font-medium">{userInfo?.fullname}</p>
         <button className="text-sm text-slate-700 underline" onClick={onLogout}>
           Logout
         </button>
       </div>
     </div>
-  );
+  ) 
 };
 
 export default ProfileInfo;

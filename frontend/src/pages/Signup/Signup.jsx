@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utilis/helper";
+import axios from "axios";
+import { BASE_URL } from "../../utilities/constant";
 
 const Signup = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const [fullname, setName] = useState("");
   const [error, setError] = useState(null);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const toggleShowPassword = () => {
     setIsShowPassword(!isShowPassword);
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    if(!name){
+    if (!fullname) {
       setError("Please Enter your name");
       return;
     }
@@ -28,7 +31,7 @@ const Signup = () => {
       return;
     }
 
-    if(!password){
+    if (!password) {
       setError("Please Enter Password");
       return;
     }
@@ -41,18 +44,48 @@ const Signup = () => {
     setError("");
 
     // Register Api calls
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/register`,
+        {
+          fullname,
+          email,
+          password,
+        },
+        // {withCredentials:true}
+      );
+
+      if (response.data && response.data.error) {
+        setError(response.data.message);
+        return;
+      }
+
+      if (response.data && response.data.token) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log(error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("An unexpected error occured. please try again.");
+      }
+    }
   };
 
-  useEffect(()=>{
-    
-    if(error){
-      const timer = setTimeout(()=>{
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
         setError("");
-      },7000);
+      }, 7000);
 
       return () => clearInterval(timer);
     }
-  },[error])
+  }, [error]);
 
   return (
     <>
@@ -65,7 +98,7 @@ const Signup = () => {
               type="text"
               placeholder="Name"
               className="input-box"
-              value={name}
+              value={fullname}
               onChange={(e) => setName(e.target.value)}
             />
 
@@ -112,10 +145,7 @@ const Signup = () => {
 
             <p className="text-sm text-center mt-4">
               Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-primary underline"
-              >
+              <Link to="/login" className="font-medium text-primary underline">
                 Login
               </Link>
             </p>

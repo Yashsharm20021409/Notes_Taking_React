@@ -2,22 +2,47 @@ import React, { useState } from "react";
 import ProfileInfo from "../ProfileInfo/ProfileInfo";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { BASE_URL } from "../../utilities/constant";
 
-const Navbar = () => {
+const Navbar = ({ userInfo, onSearchNotes , handleClearSearch}) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const onLogOut = () => {
-    navigate("/login");
+  const onLogOut = (e) => {
+    // Cookies.remove('token');
+    // navigate("/login");
+
+    e.preventDefault();
+    axios
+      .get(`${BASE_URL}/logout`, { withCredentials: true })
+      .then((res) => {
+        // toast.success(res.data.message);
+        // used before navigate otherwise you back click back page arrow again you see you are still logged in
+        // window.location.reload(true);
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error.response.data.message);
+      });
   };
 
   const handleSearch = () => {
-    //
+    if (searchQuery) {
+      // console.log(searchQuery)
+      onSearchNotes(searchQuery);
+    }
   };
 
   const onClearSearch = () => {
-    // 
+    //
     setSearchQuery("");
+    handleClearSearch();
+  };
+
+  const onLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -32,7 +57,13 @@ const Navbar = () => {
         handleSearch={handleSearch}
         onClearSearch={onClearSearch}
       />
-      <ProfileInfo onLogout={onLogOut} />
+      {userInfo ? (
+        <ProfileInfo onLogout={onLogOut} userInfo={userInfo} />
+      ) : (
+        <button className="text-sm text-slate-700 underline" onClick={onLogin}>
+          Login
+        </button>
+      )}
     </div>
   );
 };
